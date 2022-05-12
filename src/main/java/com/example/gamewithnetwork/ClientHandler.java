@@ -5,6 +5,7 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.net.Socket;
+import java.util.ArrayList;
 import java.util.Objects;
 import com.google.gson.Gson;
 
@@ -15,6 +16,8 @@ public class ClientHandler implements Runnable{
     PrintWriter out;
     int screenWidth = 0;
     String [] imgArray = {"earth.png", "mars.png", "pluto.png"};
+    ArrayList<SpriteInfo> sprites = new ArrayList<SpriteInfo>();
+
     ClientHandler(Socket clientSocket) {
         this.clientSocket = clientSocket;
     }
@@ -55,6 +58,7 @@ public class ClientHandler implements Runnable{
                 System.out.println(s);
                 int randomX = (int) (Math.random() * screenWidth - 40) + 40;
                 SpriteInfo si = new SpriteInfo(imgArray[(int) (Math.random() * 2)], randomX, 40);
+                sprites.add(si);
                 Gson gson = new Gson();
                 String json = gson.toJson(si);
                 out.println(json);

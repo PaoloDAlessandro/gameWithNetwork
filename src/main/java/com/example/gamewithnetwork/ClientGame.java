@@ -10,13 +10,11 @@ import javafx.scene.control.Label;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.text.Font;
 import javafx.stage.Stage;
-
 import java.io.*;
 import java.util.ArrayList;
 import java.util.Timer;
 import java.util.TimerTask;
 import java.io.IOException;
-import java.net.ServerSocket;
 import java.net.Socket;
 
 public class ClientGame extends Application {
@@ -29,7 +27,6 @@ public class ClientGame extends Application {
     PrintWriter out = null;
     BufferedReader in = null;
     Socket echoSocket = null;
-    BufferedReader stdIn;
     ArrayList<Sprite> sprites = new ArrayList<Sprite>();
     Timer timer = new Timer();
     int screenWidth = 0;
@@ -63,7 +60,7 @@ public class ClientGame extends Application {
                     step++;
                     if (step == 10) {
                         try {
-                            executeConnection("{\"x\":0,\"y\":0}");
+                            executeConnection("{\"x\":0,\"y\":0}", 1);
                         } catch (IOException e) {
                             e.printStackTrace();
                         }
@@ -90,19 +87,17 @@ public class ClientGame extends Application {
                 System.out.println(sprites);
                 sprites.remove(spIndex);
                 score++;
-                System.out.println(sprites.toString());
+                System.out.println(sprites);
 
                 try {
                     Point p = new Point((int) mouseEvent.getX(), (int) mouseEvent.getY());
                     Gson gson = new Gson();
                     String json = gson.toJson(p);
                     System.out.println(json);
-                    executeConnection(json);
+                    executeConnection(json, 0);
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
-
-
             }
         });
     }
@@ -129,11 +124,11 @@ public class ClientGame extends Application {
         out.println(screenWidth);
     }
 
-    public void executeConnection(String point) throws IOException {
+    public void executeConnection(String point, int command) throws IOException {
         Gson gson = new Gson();
         out.println(point);
         System.out.println("sended: " + point);
-        if(score % 2 == 0) {
+        if(score % 2 == 0 || command == 1) {
             String received = "";
             try {
                 received = in.readLine();
@@ -148,7 +143,6 @@ public class ClientGame extends Application {
             root.getChildren().add(sp.getImgView());
             System.out.println(sprites);
         }
-
     }
 
     public void move() {
