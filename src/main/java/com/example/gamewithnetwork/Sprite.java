@@ -13,7 +13,7 @@ public class Sprite implements Movable{
         this.imgName = imgName;
         this.x = x;
         this.y = y;
-        Image img = new Image("mars.png");
+        Image img = new Image(imgName);
         this.imgView = new ImageView(img);
         imgView.setFitWidth(100);
         imgView.setFitHeight(100);
@@ -79,4 +79,13 @@ public class Sprite implements Movable{
         this.imgView = imgView;
     }
 
+    @Override
+    public String toString() {
+        return "Sprite{" +
+                "imgName='" + imgName + '\'' +
+                ", x=" + x +
+                ", y=" + y +
+                ", imgView=" + imgView +
+                '}';
+    }
 }

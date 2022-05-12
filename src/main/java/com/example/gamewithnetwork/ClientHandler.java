@@ -13,6 +13,8 @@ public class ClientHandler implements Runnable{
     Socket clientSocket;
     BufferedReader in;
     PrintWriter out;
+    int screenWidth = 0;
+    String [] imgArray = {"earth.png", "mars.png", "pluto.png"};
     ClientHandler(Socket clientSocket) {
         this.clientSocket = clientSocket;
     }
@@ -40,12 +42,21 @@ public class ClientHandler implements Runnable{
     }
 
      void executeClientHandler() {
-        SpriteInfo si = new SpriteInfo("earth.png", 200, 200);
-        Gson gson = new Gson();
-        String json = gson.toJson(si);
+        try {
+            screenWidth = Integer.parseInt(in.readLine());
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
         String s = "";
+
         try {
             while ((s = in.readLine()) != null) {
+                System.out.println(s);
+                int randomX = (int) (Math.random() * screenWidth - 40) + 40;
+                SpriteInfo si = new SpriteInfo(imgArray[(int) (Math.random() * 2)], randomX, 40);
+                Gson gson = new Gson();
+                String json = gson.toJson(si);
                 out.println(json);
             }
         } catch (IOException e) {
@@ -66,31 +77,6 @@ public class ClientHandler implements Runnable{
                 e.printStackTrace();
             }
         }
-    }
-
-    static private String editString(int start, int end, String s) {
-        try {
-            return s.substring(start, end);
-        } catch (StringIndexOutOfBoundsException e) {
-            System.err.println("ERRORE");
-        }
-        return null;
-    }
-
-    static private int searchBlank(String s) {
-        if (s.indexOf("+") != -1) {
-            return s.indexOf("+");
-        }
-        if (s.indexOf("-") != -1) {
-            return s.indexOf("-");
-        }
-        if (s.indexOf("/") != -1) {
-            return s.indexOf("/");
-        }
-        if (s.indexOf("*") != -1) {
-            return s.indexOf("*");
-        }
-        return -1;
     }
 }
 
